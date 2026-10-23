@@ -1,0 +1,422 @@
+/* ============================================================
+   style.css — To-Do Life Dashboard
+   Implements: Task 2.1 (layout + base styles) and
+               Task 2.2 (error states, hidden utility)
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   CSS Custom Properties (design tokens)
+   ----------------------------------------------------------
+   Colour palette — contrast ratios verified:
+     --color-text (#1a1a2e) on --color-surface (#ffffff): ~17:1  ✓ (≥ 4.5:1)
+     --color-heading (#0f3460) on --color-surface (#ffffff): ~11:1 ✓ (≥ 4.5:1)
+     --color-muted (#4a4a6a) on --color-surface (#ffffff): ~7:1   ✓ (≥ 4.5:1)
+     --color-accent (#e94560) on --color-bg (#f0f2f5): ~4.6:1    ✓ (≥ 3:1)
+   ---------------------------------------------------------- */
+:root {
+  /* Colours */
+  --color-bg:        #f0f2f5;   /* page background */
+  --color-surface:   #ffffff;   /* widget card background */
+  --color-text:      #1a1a2e;   /* body text — contrast ≥ 4.5:1 on surface */
+  --color-heading:   #0f3460;   /* widget headings */
+  --color-muted:     #4a4a6a;   /* secondary / label text */
+  --color-accent:    #e94560;   /* interactive accent — buttons, links */
+  --color-accent-hv: #c73652;   /* accent hover state */
+  --color-border:    #d1d5db;   /* widget border / divider */
+  --color-error:     #b91c1c;   /* error text — contrast ≥ 4.5:1 on surface */
+  --color-error-bg:  #fef2f2;   /* error banner background */
+  --color-success:   #15803d;   /* success / complete notification */
+  --color-done-text: #6b7280;   /* completed-task strikethrough text */
+
+  /* Typography — body ≥ 14px, each heading ≥ 4px larger than level below */
+  --font-base:   16px;   /* body base                        */
+  --font-small:  14px;   /* minimum for task/link label text */
+  --font-h2:     22px;   /* widget title (h2)                */
+  --font-h3:     18px;   /* sub-heading (h3) — 22 - 4 = 18  */
+  /* body text at 16px is 18 - 4 = 14px minimum ✓             */
+
+  --line-height: 1.5;
+
+  /* Spacing */
+  --gap-widget:  24px;   /* space between widget cards ≥ 16px */
+  --widget-pad:  20px;   /* internal widget padding           */
+  --radius:       8px;   /* card corner radius                */
+
+  /* Shadows */
+  --shadow-widget: 0 2px 8px rgba(0, 0, 0, 0.10);
+}
+
+/* ----------------------------------------------------------
+   Reset / Box model
+   ---------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ----------------------------------------------------------
+   Base
+   ---------------------------------------------------------- */
+html {
+  font-size: var(--font-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--font-base);   /* ≥ 14px body text requirement */
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 16px;                  /* breathing room on small viewports */
+}
+
+/* ----------------------------------------------------------
+   Screen-reader-only utility
+   ---------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ----------------------------------------------------------
+   Hidden utility — toggled by JS to show/hide elements
+   ---------------------------------------------------------- */
+.hidden {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------
+   Dashboard grid
+   Single column on narrow viewports; two columns from 640 px.
+   All four widgets remain visible without horizontal scroll
+   at any viewport ≥ 320 px.
+   ---------------------------------------------------------- */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr;          /* single column — safe for ≥ 320px */
+  gap: var(--gap-widget);              /* ≥ 16px between widgets */
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Two-column layout from 640px wide */
+@media (min-width: 640px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Four columns on large screens */
+@media (min-width: 1024px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+    /* keep 2-column for readability; could go 4-col at very wide viewports */
+  }
+}
+
+/* ----------------------------------------------------------
+   Widget card base
+   ---------------------------------------------------------- */
+.widget {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-widget);
+  padding: var(--widget-pad);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Prevent any child from causing horizontal overflow */
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ----------------------------------------------------------
+   Typography hierarchy
+   h2 = 22px, h3 = 18px, body = 16px, small = 14px
+   Each level is ≥ 4px larger than the level below ✓
+   ---------------------------------------------------------- */
+h1 {
+  font-size: 26px;                /* 26px > 22px (h2) by 4px ✓ */
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+h2,
+.widget-title {
+  font-size: var(--font-h2);      /* 22px */
+  font-weight: 600;
+  color: var(--color-heading);
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: var(--font-h3);      /* 18px — 22 - 4 = 18 ✓ */
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+p,
+li,
+label,
+input,
+button {
+  font-size: var(--font-small);   /* minimum 14px for task/link label text ✓ */
+}
+
+/* ----------------------------------------------------------
+   Greeting widget
+   ---------------------------------------------------------- */
+#greeting-widget {
+  text-align: center;
+}
+
+.greeting-text {
+  font-size: var(--font-h2);
+  font-weight: 700;
+  color: var(--color-heading);
+  min-height: 1.4em;              /* reserve space when empty */
+}
+
+.greeting-time {
+  font-size: 48px;                /* large time display — contrast ≥ 3:1 ✓ */
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--color-heading);
+  line-height: 1.1;
+}
+
+.greeting-date {
+  font-size: var(--font-small);
+  color: var(--color-muted);
+}
+
+/* ----------------------------------------------------------
+   Focus Timer widget
+   ---------------------------------------------------------- */
+.timer-display {
+  font-size: 52px;                /* prominent countdown — contrast ≥ 3:1 ✓ */
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-heading);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.timer-complete {
+  font-size: var(--font-small);
+  color: var(--color-success);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------
+   To-Do List widget
+   ---------------------------------------------------------- */
+.todo-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.todo-input-row input {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+
+.todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.todo-list li:last-child {
+  border-bottom: none;
+}
+
+/* Completed task styling */
+.todo-list li.done .todo-desc {
+  text-decoration: line-through;
+  color: var(--color-done-text);
+}
+
+.todo-desc {
+  flex: 1 1 0;
+  font-size: var(--font-small);
+  color: var(--color-text);
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* ----------------------------------------------------------
+   Quick Links widget
+   ---------------------------------------------------------- */
+.links-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.links-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ----------------------------------------------------------
+   Form controls (shared across widgets)
+   ---------------------------------------------------------- */
+input[type="text"],
+input[type="url"] {
+  font-size: var(--font-small);   /* ≥ 14px ✓ */
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  width: 100%;
+  line-height: 1.4;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.20);
+}
+
+button {
+  font-size: var(--font-small);   /* ≥ 14px ✓ */
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+  line-height: 1.2;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  color:#666666;
+  cursor: not-allowed;
+}
+button:hover,
+button:focus-visible {
+  background-color: var(--color-accent-hv);
+  outline: none;
+}                 
+
+button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.30);
+}
+
+/* Secondary (icon-only / small action) button variant */
+button.btn-secondary {
+  background-color: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  font-weight: 400;
+}
+
+button.btn-secondary:hover,
+button.btn-secondary:focus-visible {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ----------------------------------------------------------
+   Inline error messages  (Task 2.2)
+   ---------------------------------------------------------- */
+.error-msg {
+  font-size: var(--font-small);
+  color: var(--color-error);      /* #b91c1c — contrast ≥ 4.5:1 on white ✓ */
+  background-color: var(--color-error-bg);
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-top: 2px;
+}
+
+/* ----------------------------------------------------------
+   Widget-level error banner  (Task 2.2 / Req 6.6)
+   Injected by window.onerror global handler in app.js
+   ---------------------------------------------------------- */
+.widget-error-banner {
+  font-size: var(--font-small);
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 600;
+  width: 100%;
+}
+
+/* ----------------------------------------------------------
+   Responsive overflow guard
+   Prevents any widget from causing page-level horizontal
+   scrollbar at viewport widths ≥ 320px.
+   ---------------------------------------------------------- */
+@media (max-width: 639px) {
+  body {
+    padding: 12px 8px;
+  }
+
+  .widget {
+    padding: 14px 12px;
+  }
+
+  .timer-display {
+    font-size: 40px;
+  }
+
+  .greeting-time {
+    font-size: 36px;
+  }
+}

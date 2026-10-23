@@ -1,21 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List Life Dashboard</title>
-</head>
-<body>
-    <header>
-        
-    </header>
-    
-    <main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="js/app.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+
+      <!-- Greeting Widget -->
+      <section id="greeting-widget" class="widget" aria-label="Greeting">
+        <h2 id="greeting-text" class="greeting-text"></h2>
+        <p id="greeting-time" class="greeting-time">--:--</p>
+        <p id="greeting-date" class="greeting-date">Date unavailable</p>
+      </section>
+
+      <!-- Focus Timer Widget -->
+      <section id="timer-widget" class="widget" aria-label="Focus Timer">
+        <h2 class="widget-title">Focus Timer</h2>
+        <p id="timer-display" class="timer-display">25:00</p>
+        <div class="timer-controls">
+          <button id="timer-start" type="button">Start</button>
+          <button id="timer-stop" type="button">Stop</button>
+          <button id="timer-reset" type="button">Reset</button>
+        </div>
+        <p id="timer-complete" class="timer-complete hidden" role="status" aria-live="polite">
+          Session complete! Great work.
+        </p>
+      </section>
+
+      <!-- To-Do List Widget -->
+      <section id="todo-widget" class="widget" aria-label="To-Do List">
+        <h2 class="widget-title">To-Do List</h2>
+        <div class="todo-input-row">
+          <label for="todo-input" class="sr-only">New task description</label>
+          <input
+            id="todo-input"
+            type="text"
+            placeholder="Add a new task…"
+            maxlength="500"
+            aria-describedby="todo-error"
+          />
+          <button id="todo-add-btn" type="button">Add</button>
+        </div>
+        <p id="todo-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
+        <ul id="todo-list" class="todo-list" aria-label="Task list"></ul>
+      </section>
+
+      <!-- Quick Links Widget -->
+      <section id="links-widget" class="widget" aria-label="Quick Links">
+        <h2 class="widget-title">Quick Links</h2>
+        <div class="links-input-group">
+          <div class="links-input-row">
+            <label for="link-label-input" class="sr-only">Link label</label>
+            <input
+              id="link-label-input"
+              type="text"
+              placeholder="Label"
+              maxlength="50"
+              aria-describedby="link-label-error"
+            />
+            <p id="link-label-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
+          </div>
+          <div class="links-input-row">
+            <label for="link-url-input" class="sr-only">Link URL</label>
+            <input
+              id="link-url-input"
+              type="url"
+              placeholder="https://example.com"
+              maxlength="2048"
+              aria-describedby="link-url-error"
+            />
+            <p id="link-url-error" class="error-msg hidden" role="alert" aria-live="polite"></p>
+          </div>
+          <button id="link-add-btn" type="button">Add Link</button>
+        </div>
+        <div id="links-list" class="links-list" role="list" aria-label="Quick links"></div>
+      </section>
 
     </main>
-    
-    <footer>
-
-    </footer>
-</body>
+  </body>
 </html>
