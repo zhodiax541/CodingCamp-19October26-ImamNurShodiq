@@ -1,5 +1,58 @@
 /* app.js — To-Do Life Dashboard application logic */
 
+//Added features timer , global variable (I have no idea where it must be placed)
+const focusBtn = document.getElementById('timer-focus');
+const sBreakBtn = document.getElementById('timer-short-break');
+const lBreakBtn = document.getElementById('timer-long-break');
+var timerMode = 'focus';
+    
+
+/* Change Light or Dark Mode */
+  const modebtn = document.getElementById('mode-btn');
+  modebtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+
+/* Edit Greeting Name */
+  const greetingName = document.getElementById('greeting-name');
+  const inputName = document.getElementById('name-input');
+
+  const currentName = localStorage.getItem('userName');
+  if (currentName) {
+    greetingName.textContent = currentName;
+  }
+
+  // Clik to edit
+  greetingName.addEventListener('click', () => {
+    inputName.value = greetingName.textContent;
+    greetingName.style.display = 'none';
+    inputName.style.display = 'inline-block';
+    inputName.focus();
+  });
+
+  // Save enter key
+  inputName.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      saveName();
+    }
+  });
+
+  // Save when Lost Focus
+  inputName.addEventListener('blur', () => {
+    saveName();
+  });
+
+  //Function Save Name
+  function saveName() {
+    const newName = inputName.value.trim();
+    if (newName) {
+      greetingName.textContent = newName;
+      localStorage.setItem('userName', newName);
+    }
+    inputName.style.display = 'none';
+    greetingName.style.display = 'inline';
+  }
+
 /* ─────────────────────────────────────────────
    Task 3.1 — State object and data-model helpers
    ───────────────────────────────────────────── */
@@ -12,6 +65,7 @@ const state = {
     remaining:  1500, // seconds (25 minutes)
     intervalId: null, // setInterval handle or null when stopped
     running:    false // boolean
+     
   }
 };
 
@@ -272,6 +326,39 @@ const Timer = {
    * Requirement 2.3: display remaining time in MM:SS format.
    */
   init() {
+    // Bind Focus button
+    if (focusBtn) {
+      focusBtn.addEventListener('click', () => {
+        focusBtn.disabled = true;
+        sBreakBtn.disabled = false;
+        lBreakBtn.disabled = false;
+        timerMode = 'focus';
+        Timer.reset();
+      });
+    }
+
+    // Bind Short Break button
+     if (sBreakBtn) {
+      sBreakBtn.addEventListener('click', () => {
+        focusBtn.disabled = false;
+        sBreakBtn.disabled = true;
+        lBreakBtn.disabled = false;
+        timerMode = 'sBreak';
+        Timer.reset();
+      });
+    }
+
+    // Bind Long Break button
+    if (lBreakBtn) {
+      lBreakBtn.addEventListener('click', () => {
+        focusBtn.disabled = false;
+        sBreakBtn.disabled = false;
+        lBreakBtn.disabled = true;
+        timerMode = 'lBreak';
+        Timer.reset();
+      });
+    }
+
     // Set initial display.
     const display = document.getElementById('timer-display');
     if (display) {
@@ -375,11 +462,19 @@ const Timer = {
   reset() {
     Timer.stop();
 
-    state.timer.remaining = 1500;
+    if (timerMode === 'focus') {
+      state.timer.remaining = 1500;
+    }
+    else if (timerMode === 'sBreak') {
+      state.timer.remaining = 300;
+    }
+    else {
+      state.timer.remaining = 900;
+    }
 
     const display = document.getElementById('timer-display');
     if (display) {
-      display.textContent = Timer.format(1500);
+      display.textContent = Timer.format(state.timer.remaining);
     }
 
     // Re-hide the session-complete notification.
@@ -571,6 +666,15 @@ const Todos = {
       showError('Task description must be 500 characters or fewer.');
       return;
     }
+
+     // prevent duplicate
+    const trimmedDesc = description.trim().toLowerCase();
+    const isDuplicate = state.todos.some( (t) => (t.description || t).trim().toLowerCase() === trimmedDesc);
+    if (isDuplicate) {
+      showError('Task already exists.');
+      return;
+    }
+
 
     // ── Success path ──────────────────────────────────────────────────────
     const task = createTask(description.trim());

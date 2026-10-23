@@ -28,6 +28,8 @@
   --color-success:   #15803d;   /* success / complete notification */
   --color-done-text: #6b7280;   /* completed-task strikethrough text */
 
+
+
   /* Typography — body ≥ 14px, each heading ≥ 4px larger than level below */
   --font-base:   16px;   /* body base                        */
   --font-small:  14px;   /* minimum for task/link label text */
@@ -44,6 +46,22 @@
 
   /* Shadows */
   --shadow-widget: 0 2px 8px rgba(0, 0, 0, 0.10);
+}
+
+body.dark-mode {
+  /* Colours */
+  --color-bg:        #1d1e20;   /* page background */
+  --color-surface:   #2b2a2e;   /* widget card background */
+  --color-text:      #e6deba;   /* body text — contrast ≥ 4.5:1 on surface */
+  --color-heading:   #f8f8f8;   /* widget headings */
+  --color-muted:     #d9d9da;   /* secondary / label text */
+  --color-accent:    #2d24a1;   /* interactive accent — buttons, links */
+  --color-accent-hv: #5871e4;   /* accent hover state */
+  --color-border:    #393b41;   /* widget border / divider */
+  --color-error:     #b91c1c;   /* error text — contrast ≥ 4.5:1 on surface */
+  --color-error-bg:  #dfd7d7;   /* error banner background */
+  --color-success:   #15803d;   /* success / complete notification */
+  --color-done-text: #6b7280;   /* completed-task strikethrough text */
 }
 
 /* ----------------------------------------------------------
@@ -298,10 +316,24 @@ button {
 
 .links-list {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.link-open-btn {
+  width: 100%;
+  
+}
 /* ----------------------------------------------------------
    Form controls (shared across widgets)
    ---------------------------------------------------------- */
@@ -339,11 +371,6 @@ button {
   line-height: 1.2;
 }
 
-button:disabled {
-  background-color: #cccccc;
-  color:#666666;
-  cursor: not-allowed;
-}
 button:hover,
 button:focus-visible {
   background-color: var(--color-accent-hv);
@@ -352,6 +379,12 @@ button:focus-visible {
 
 button:focus-visible {
   box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.30);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  color:#666666;
+  cursor: not-allowed;
 }
 
 /* Secondary (icon-only / small action) button variant */
